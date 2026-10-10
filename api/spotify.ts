@@ -24,26 +24,34 @@ async function getAccessToken() {
 }
 
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
-  // Allow CORS from GitHub Pages
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
 
   try {
-    const { access_token } = await getAccessToken();
+    const tokenData = await getAccessToken();
+
+    if (!tokenData.access_token) {
+      return res.status(500).json({ isPlaying: false, error: 'no_token', detail: tokenData });
+    }
+
+    const { access_token } = tokenData;
 
     const npRes = await fetch(NOW_PLAYING_URL, {
       headers: { Authorization: `Bearer ${access_token}` },
     });
 
-    // 204 = nothing playing
     if (npRes.status === 204) {
-      return res.json({ isPlaying: false });
+      return res.json({ isPlaying: false, reason: '204_no_content' });
+    }
+
+    if (npRes.status !== 200) {
+      return res.json({ isPlaying: false, reason: `status_${npRes.status}` });
     }
 
     const data = await npRes.json();
 
     if (!data?.item) {
-      return res.json({ isPlaying: false });
+      return res.json({ isPlaying: false, reason: 'no_item' });
     }
 
     return res.json({
@@ -53,7 +61,7 @@ export default async function handler(_req: VercelRequest, res: VercelResponse) 
       albumArt: data.item.album.images[2]?.url ?? data.item.album.images[0]?.url,
       songUrl: data.item.external_urls.spotify,
     });
-  } catch {
-    return res.status(500).json({ isPlaying: false });
+  } catch (e: any) {
+    return res.status(500).json({ isPlaying: false, error: e.message });
   }
 }
