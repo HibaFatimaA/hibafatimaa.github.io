@@ -4,10 +4,9 @@ import React, { useState, useEffect } from 'react';
    DATA
 ───────────────────────────────────────────── */
 const LINKS = [
-  { emoji: '🐙', label: 'github',    href: 'https://github.com/HibaFatimaA' },
-  { emoji: '💼', label: 'linkedin',  href: 'https://linkedin.com/in/hibafatimaa' },
-  { emoji: '📸', label: 'instagram', href: 'https://instagram.com/' },
-  { emoji: '✉️', label: 'email me',  href: 'mailto:you@example.com' },
+  { emoji: '🐙', label: 'github',   href: 'https://github.com/HibaFatimaA' },
+  { emoji: '💼', label: 'linkedin', href: 'https://linkedin.com/in/hibafatimaa' },
+  { emoji: '✉️', label: 'email me', href: 'mailto:you@example.com' },
 ];
 
 const EXPERIENCE = [
@@ -26,21 +25,20 @@ const EXPERIENCE = [
 ];
 
 const TRAVEL_PHOTOS = [
-  { src: '/asia1.JPG',  caption: 'asia, sept 2026'      },
+  { src: '/asia1.JPG',  caption: 'thailand, sept 2026'  },
   { src: '/ams_1.JPG',  caption: 'amsterdam, may 2026'  },
   { src: '/sf1.JPG',    caption: 'sf, oct 2025'         },
 ];
 
 const INTERESTS = [
-  { label: '🌿 plants',       color: '#2d5a1e' },
-  { label: 'ai/ml',           color: '#5a2d6e' },
-  { label: '☕ matcha',        color: '#6b4020' },
-  { label: 'cloud computing', color: '#1a4a70' },
-  { label: '📷 photography',  color: '#5a2020' },
-  { label: 'open source',     color: '#1e5038' },
-  { label: '🎵 music',        color: '#5a5010' },
-  { label: 'hiking 🏔️',       color: '#3a2060' },
-  { label: 'problem solving', color: '#4a3a10' },
+  { label: '🌿 plants',     color: '#2d5a1e' },
+  { label: 'matcha ☕',      color: '#6b4020' },
+  { label: '📷 photography', color: '#5a2020' },
+  { label: '🎵 music',       color: '#5a5010' },
+  { label: 'hiking 🏔️',     color: '#3a2060' },
+  { label: 'reading 📚',     color: '#1a4a70' },
+  { label: 'cooking 🍳',     color: '#1e5038' },
+  { label: 'travelling ✈️',  color: '#4a3a10' },
 ];
 
 const MARQUEE =
@@ -343,20 +341,22 @@ export default function App() {
         }
       `}</style>
 
-      {/* ── BACKGROUND STICKER IMAGES (outside browser window, on grid paper) ── */}
+      {/* ── BACKGROUND STICKER IMAGES — scroll with page, scattered across background ── */}
       {([
-        { src:'/star4.png',      top:10,   right:10, width:60,  delay:0.8, r:'5deg',   rTo:'-5deg' },
-        { src:'/feltstar2.png',  top:120,  left:5,   width:55,  delay:0.4, r:'-5deg',  rTo:'7deg'  },
-        { src:'/smiskiboard.png',bottom:60,left:8,   width:90,  delay:1.2, r:'-3deg',  rTo:'5deg'  },
-        { src:'/heart1.png',     bottom:20,left:100, width:50,  delay:0.6, r:'6deg',   rTo:'-4deg' },
-        { src:'/post1.png',      top:200,  right:5,  width:70,  delay:1.0, r:'-6deg',  rTo:'4deg'  },
-        { src:'/fabric1.png',    bottom:100,right:8, width:75,  delay:0.3, r:'4deg',   rTo:'-6deg' },
-        { src:'/swirl2.png',     bottom:200,left:15, width:45,  delay:1.4, r:'-4deg',  rTo:'6deg'  },
-        { src:'/star1.png',      top:350,  left:20,  width:40,  delay:0.7, r:'3deg',   rTo:'-7deg' },
-      ] as { src:string; top?:number; bottom?:number; left?:number; right?:number; width:number; delay:number; r:string; rTo:string }[]).map((s, i) => (
+        { src:'/star4.png',      top:80,   left:'15%',  width:55,  delay:0.8, r:'5deg',   rTo:'-5deg' },
+        { src:'/feltstar2.png',  top:220,  right:'18%', width:50,  delay:0.4, r:'-5deg',  rTo:'7deg'  },
+        { src:'/smiskiboard.png',top:420,  left:'8%',   width:85,  delay:1.2, r:'-3deg',  rTo:'5deg'  },
+        { src:'/heart1.png',     top:550,  right:'12%', width:48,  delay:0.6, r:'6deg',   rTo:'-4deg' },
+        { src:'/post1.png',      top:160,  left:'22%',  width:65,  delay:1.0, r:'-6deg',  rTo:'4deg'  },
+        { src:'/fabric1.png',    top:700,  right:'8%',  width:70,  delay:0.3, r:'4deg',   rTo:'-6deg' },
+        { src:'/swirl2.png',     top:350,  right:'22%', width:42,  delay:1.4, r:'-4deg',  rTo:'6deg'  },
+        { src:'/star1.png',      top:600,  left:'18%',  width:38,  delay:0.7, r:'3deg',   rTo:'-7deg' },
+        { src:'/flower1.png',    top:480,  right:'20%', width:44,  delay:0.5, r:'-3deg',  rTo:'5deg'  },
+        { src:'/bow1.png',       top:280,  left:'12%',  width:40,  delay:1.1, r:'7deg',   rTo:'-3deg' },
+      ] as { src:string; top:number; left?:string; right?:string; width:number; delay:number; r:string; rTo:string }[]).map((s, i) => (
         <img key={i} src={s.src} alt="" style={{
-          position:'fixed',
-          top: s.top, bottom: s.bottom,
+          position:'absolute',
+          top: s.top,
           left: s.left, right: s.right,
           width: s.width,
           pointerEvents:'none', zIndex:0,
@@ -420,14 +420,14 @@ export default function App() {
           position:'relative',
         }}>
 
-        {/* ── WASHI TAPE on seam between browser bar and page body ── */}
+        {/* ── WASHI TAPE overlapping browser bar / page body seam ── */}
         <div style={{
-          position:'absolute', top:-6, left:0, right:0,
-          height:14, zIndex:30, pointerEvents:'none',
+          position:'absolute', top:-9, left:-2, right:-2,
+          height:18, zIndex:30, pointerEvents:'none',
           backgroundImage:`url('/washi.png')`,
           backgroundRepeat:'repeat-x',
-          backgroundSize:'auto 100%',
-          opacity:0.85,
+          backgroundSize:'auto 18px',
+          opacity:0.9,
         }} />
 
           {/* Two-col grid */}
@@ -487,9 +487,9 @@ export default function App() {
                 <div style={{ fontFamily:"'Space Mono', monospace", fontSize:11,
                   color:C.mid, textAlign:'center', lineHeight:1.9 }}>
                   math + bba 🎓<br/>
-                  waterloo · laurier<br/>
+                  uwaterloo · laurier<br/>
                   2021 – 2026<br/><br/>
-                  📍 somewhere in canada
+                  📍 waterloo, on
                 </div>
 
                 <div style={{ textAlign:'center', marginTop:8, display:'flex', justifyContent:'center' }}>
@@ -539,26 +539,6 @@ export default function App() {
                   hi! i'm hiba. welcome to my website — a personal site made as a creative outlet,
                   inspired by my favourite colour green. feel free to connect :D
                 </p>
-              </div>
-
-              {/* Status */}
-              <div style={{
-                background:C.creamBg,
-                border:`2px solid ${C.creamBorder}`,
-                borderRadius:6, padding:'8px 12px',
-                fontFamily:"'Space Mono', monospace",
-                fontSize:12, color:'#5a4a28',
-                display:'flex', alignItems:'center', gap:8,
-                boxShadow:`2px 2px 0 ${C.creamShadow}`,
-              }}>
-                <div style={{
-                  width:8, height:8, borderRadius:'50%',
-                  background:C.statusDot,
-                  boxShadow:`0 0 5px ${C.statusDot}`,
-                  animation:'blink 2s ease-in-out infinite',
-                  flexShrink:0,
-                }} />
-                user status: probably overwatering my plants again 🪴
               </div>
 
               {/* Spotify */}
@@ -628,7 +608,7 @@ export default function App() {
           <div style={{ textAlign:'center', marginTop:16 }}>
             <span style={{ fontFamily:"'Space Mono', monospace",
               fontSize:10, color:C.muted, letterSpacing:2 }}>
-              made with 🌿 by hiba · 2025 · best viewed with a cup of matcha
+              made with 🌿 by hiba · last updated september 2026
             </span>
           </div>
 
