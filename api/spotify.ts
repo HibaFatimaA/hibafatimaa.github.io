@@ -4,6 +4,7 @@ const REFRESH_TOKEN = process.env.SPOTIFY_REFRESH_TOKEN;
 
 const TOKEN_URL = 'https://accounts.spotify.com/api/token';
 const NOW_PLAYING_URL = 'https://api.spotify.com/v1/me/player/currently-playing';
+const RECENTLY_PLAYED_URL = 'https://api.spotify.com/v1/me/player/recently-played?limit=1';
 
 async function getAccessToken() {
   const basic = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
@@ -42,15 +43,26 @@ export default async function handler(req: Request) {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
 
-    if (npRes.status === 204) {
+    if (npRes.status === 204 || npRes.status !== 200) {
+      // Nothing playing — fetch most recently played
+      const rpRes = await fetch(RECENTLY_PLAYED_URL, {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` },
+      });
+      if (rpRes.status === 200) {
+        const rpData = await rpRes.json();
+        const item = rpData.items?.[0];
+        if (item) {
+          return new Response(JSON.stringify({
+            isPlaying: false,
+            title: item.track.name,
+            artist: item.track.artists.map((a: { name: string }) => a.name).join(', '),
+            albumArt: item.track.album.images[2]?.url ?? item.track.album.images[0]?.url,
+            songUrl: item.track.external_urls.spotify,
+            playedAt: item.played_at,
+          }), { headers });
+        }
+      }
       return new Response(JSON.stringify({ isPlaying: false }), { headers });
-    }
-
-    if (npRes.status !== 200) {
-      return new Response(
-        JSON.stringify({ isPlaying: false, reason: `status_${npRes.status}` }),
-        { headers }
-      );
     }
 
     const data = await npRes.json();

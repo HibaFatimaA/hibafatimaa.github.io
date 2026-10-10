@@ -129,13 +129,23 @@ interface SpotifyTrack {
   artist?: string;
   albumArt?: string;
   songUrl?: string;
+  playedAt?: string; // ISO timestamp for last played
+}
+
+function timeAgo(isoString: string): string {
+  const seconds = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000);
+  if (seconds < 60) return 'just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 }
 
 function SpotifyWidget() {
   const [track, setTrack] = useState<SpotifyTrack | null>(null);
 
   useEffect(() => {
-    // Fetch from our Vercel serverless function
     fetch('https://hibafatimaa-github-io.vercel.app/api/spotify')
       .then(r => r.json())
       .then(data => setTrack(data))
@@ -144,73 +154,71 @@ function SpotifyWidget() {
 
   return (
     <div style={{
-      background: '#0f1a0a',
+      background: '#0a1a08',
       border: `2px solid ${C.panelBorder}`,
       borderRadius: 8,
-      padding: '10px 12px',
+      padding: '10px 14px',
       boxShadow: `3px 3px 0 ${C.panelShadow}`,
       display: 'flex',
       alignItems: 'center',
-      gap: 10,
+      gap: 12,
+      minHeight: 64,
     }}>
-      {/* Spotify icon */}
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="#1DB954" style={{ flexShrink: 0 }}>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#1DB954" style={{ flexShrink:0 }}>
         <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
       </svg>
 
       <div style={{ flex: 1, minWidth: 0 }}>
         {!track ? (
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: '#4a6a3a' }}>
+          <span style={{ fontFamily:"'Space Mono',monospace", fontSize:11, color:'#4a6a3a' }}>
             loading...
           </span>
-        ) : track.isPlaying && track.title ? (
+        ) : track.title ? (
           <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 9,
-                color: '#1DB954', letterSpacing: 2, textTransform: 'uppercase' }}>
-                now playing
-              </span>
-              {/* animated bars */}
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 10 }}>
-                {[1,2,3].map(i => (
-                  <div key={i} style={{
-                    width: 3,
-                    background: '#1DB954',
-                    borderRadius: 1,
-                    animation: `bar${i} 0.8s ease-in-out ${i * 0.15}s infinite alternate`,
-                  }} />
-                ))}
-              </div>
+            <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:3 }}>
+              {track.isPlaying ? (
+                <>
+                  <span style={{ fontFamily:"'Space Mono',monospace", fontSize:9,
+                    color:'#1DB954', letterSpacing:2, textTransform:'uppercase' }}>now playing</span>
+                  <div style={{ display:'flex', alignItems:'flex-end', gap:2, height:10 }}>
+                    {[1,2,3].map(i => (
+                      <div key={i} style={{ width:3, background:'#1DB954', borderRadius:1,
+                        animation:`bar${i} 0.8s ease-in-out ${i*0.15}s infinite alternate` }} />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <span style={{ fontFamily:"'Space Mono',monospace", fontSize:9,
+                  color:'#5a8050', letterSpacing:2, textTransform:'uppercase' }}>
+                  last played · {track.playedAt ? timeAgo(track.playedAt) : ''}
+                </span>
+              )}
             </div>
-            <a href={track.songUrl} target="_blank" rel="noreferrer"
-              style={{ textDecoration: 'none' }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12,
-                color: '#e8f0d8', fontWeight: 700,
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <a href={track.songUrl} target="_blank" rel="noreferrer" style={{ textDecoration:'none' }}>
+              <div style={{ fontFamily:"'Space Mono',monospace", fontSize:13, fontWeight:700,
+                color: track.isPlaying ? '#e8f4d0' : '#a8c490',
+                overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                 {track.title}
               </div>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10,
-                color: '#7a9a6a' }}>
+              <div style={{ fontFamily:"'Space Mono',monospace", fontSize:10, marginTop:1,
+                color: track.isPlaying ? '#7ab86a' : '#5a8050' }}>
                 {track.artist}
               </div>
             </a>
           </>
         ) : (
-          <div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9,
-              color: '#4a6a3a', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>
-              not playing
-            </div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: '#6a8a5a' }}>
-              hiba is offline 🌿
-            </div>
-          </div>
+          <span style={{ fontFamily:"'Space Mono',monospace", fontSize:11, color:'#4a6a3a' }}>
+            hiba is offline 🌿
+          </span>
         )}
       </div>
 
       {track?.albumArt && (
-        <img src={track.albumArt} alt="album art"
-          style={{ width: 36, height: 36, borderRadius: 4, flexShrink: 0 }} />
+        <img src={track.albumArt} alt="album art" style={{
+          width:42, height:42, borderRadius:6, flexShrink:0,
+          opacity: track.isPlaying ? 1 : 0.6,
+          border:'1.5px solid #2a4e1e',
+        }} />
       )}
     </div>
   );
