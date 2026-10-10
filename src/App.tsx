@@ -220,15 +220,6 @@ function SpotifyWidget() {
    VISITOR COUNTER
 ───────────────────────────────────────────── */
 function VisitorCounter() {
-  const [count, setCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetch('https://api.counterapi.dev/v1/hibafatimaa-github-io/visits/up')
-      .then(r => r.json())
-      .then(data => setCount(data.value))
-      .catch(() => setCount(null));
-  }, []);
-
   return (
     <div style={{
       display: 'flex',
@@ -247,7 +238,7 @@ function VisitorCounter() {
         color: '#a8c88a',
         letterSpacing: 1,
       }}>
-        {count !== null ? `${count.toLocaleString()} visitors` : 'counting...'}
+        thanks for visiting 🌿
       </span>
     </div>
   );
