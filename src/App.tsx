@@ -136,7 +136,7 @@ function SpotifyWidget() {
 
   useEffect(() => {
     // Fetch from our Vercel serverless function
-    fetch('https://hibafatimaa-github-mq8vsagro-hiba-5d4b.vercel.app/api/spotify')
+    fetch('https://hibafatimaa-github-io.vercel.app/api/spotify')
       .then(r => r.json())
       .then(data => setTrack(data))
       .catch(() => setTrack({ isPlaying: false }));
