@@ -223,7 +223,7 @@ function VisitorCounter() {
   const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('https://api.countapi.xyz/hit/hibafatimaa.github.io/visits')
+    fetch('https://api.counterapi.dev/v1/hibafatimaa-github-io/visits/up')
       .then(r => r.json())
       .then(data => setCount(data.value))
       .catch(() => setCount(null));
